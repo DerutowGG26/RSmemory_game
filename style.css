@@ -74,3 +74,122 @@ button:active {
     width: 100%;
     aspect-ratio: 1; 
 }
+
+.card {
+    perspective: 800px; 
+    cursor: pointer;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.4s ease-in-out;
+    transform-style: preserve-3d; 
+}
+
+.card.flipped .card-inner,
+.card.matched .card-inner {
+    transform: rotateY(180deg); 
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; 
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+
+.card-front {
+    background-color: var(--primary);
+    background-image: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 11%);
+    background-size: 10px 10px; 
+}
+
+
+.card-back {
+    background-color: var(--card-bg);
+    transform: rotateY(180deg); 
+    border: 2px solid #e5e7eb;
+}
+
+
+.card.matched .card-back {
+    border-color: var(--successcouple);
+    background-color: #f0fdf4; 
+}
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-overlay);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100; 
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    min-width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: modalPop 0.3s ease-out;
+}
+
+@keyframes modalPop {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-title {
+    font-size: 22px;
+    color: var(--text-main);
+    margin-bottom: 10px;
+}
+
+.modal-text {
+    font-size: 16px;
+    color: #4b5563; 
+    margin-bottom: 25px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+
+.leaderboard-list {
+    list-style: none;
+    margin-bottom: 20px;
+    text-align: left;
+    max-height: 250px;
+    overflow-y: auto; 
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+
+.leaderboard-item:last-child {
+    border-bottom: none;
+}
