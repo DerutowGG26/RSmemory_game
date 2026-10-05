@@ -160,3 +160,127 @@ function checkMatch() {
         }, 1000);
     }
 }
+
+
+
+function updateStats() {
+    movesEl.textContent = `Ходы: ${moves}`;
+    pairsEl.textContent = `Пары: ${matchedPairs} / 8`;
+}
+
+
+function saveResult(finalMoves) {
+    const today = new Date().toLocaleDateString('ru-RU');
+    const newRecord = { moves: finalMoves, date: today, time: Date.now() };
+    
+    let scores = JSON.parse(localStorage.getItem('memoryScores')) || [];
+    scores.push(newRecord);
+    
+
+    scores.sort((a, b) => {
+        if (a.moves !== b.moves) return a.moves - b.moves;
+        return a.time - b.time; 
+    });
+    
+
+    if (scores.length > 10) scores.length = 10;
+    
+    localStorage.setItem('memoryScores', JSON.stringify(scores));
+}
+
+
+function closeModal() {
+    const existingModal = document.querySelector('.modal-overlay');
+    if (existingModal) {
+        document.body.removeChild(existingModal);
+        document.body.style.overflow = ''; 
+    }
+}
+
+
+function showWinModal(finalMoves) {
+    closeModal(); 
+
+    const overlay = makeEl('div', 'modal-overlay');
+    const content = makeEl('div', 'modal-content');
+    
+    const title = makeEl('h2', 'modal-title', 'Победа!');
+    const text = makeEl('p', 'modal-text', `Вы нашли все пары за ${finalMoves} ходов.`);
+    
+    const buttonsWrap = makeEl('div', 'modal-buttons');
+    
+    const btnNewGame = makeEl('button', '', 'Новая игра');
+    btnNewGame.addEventListener('click', startNewGame);
+    
+    const btnClose = makeEl('button', '', 'Закрыть');
+    btnClose.addEventListener('click', closeModal);
+    
+    buttonsWrap.appendChild(btnNewGame);
+    buttonsWrap.appendChild(btnClose);
+    
+    content.appendChild(title);
+    content.appendChild(text);
+    content.appendChild(buttonsWrap);
+    
+    overlay.appendChild(content);
+    
+  
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+    });
+
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden'; 
+}
+
+
+function showLeaderboard() {
+    closeModal();
+
+    const overlay = makeEl('div', 'modal-overlay');
+    const content = makeEl('div', 'modal-content');
+    
+    const title = makeEl('h2', 'modal-title', 'Таблица лидеров');
+    content.appendChild(title);
+
+    const scores = JSON.parse(localStorage.getItem('memoryScores')) || [];
+    
+    if (scores.length === 0) {
+        content.appendChild(makeEl('p', 'modal-text', 'Пока нет результатов'));
+    } else {
+        const list = makeEl('ul', 'leaderboard-list');
+        scores.forEach((record, index) => {
+            const item = makeEl('li', 'leaderboard-item');
+            
+            const leftPart = makeEl('span', '', `${index + 1}. Ходов: ${record.moves}`);
+            const rightPart = makeEl('span', '', record.date);
+            
+            item.appendChild(leftPart);
+            item.appendChild(rightPart);
+            list.appendChild(item);
+        });
+        content.appendChild(list);
+    }
+
+    const btnClose = makeEl('button', '', 'Закрыть');
+    btnClose.addEventListener('click', closeModal);
+    
+    const buttonsWrap = makeEl('div', 'modal-buttons');
+    buttonsWrap.appendChild(btnClose);
+    content.appendChild(buttonsWrap);
+    
+    overlay.appendChild(content);
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+    });
+
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+}
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+
+
+document.addEventListener('DOMContentLoaded', initApp);
